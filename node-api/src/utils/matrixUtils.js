@@ -1,5 +1,27 @@
-function flatten(matrices) {
-  return matrices.flat(2)
+module.exports = { flatten, isDiagonal }
+
+function validateMatrix(matrix) {
+  if (!Array.isArray(matrix) || matrix.length === 0) {
+    throw new Error("Matrix must be a non-empty array")
+  }
+
+  const cols = matrix[0].length
+
+  if (!Array.isArray(matrix[0]) || cols === 0) {
+    throw new Error("Matrix rows must be non-empty arrays")
+  }
+
+  for (const row of matrix) {
+    if (!Array.isArray(row) || row.length !== cols) {
+      throw new Error("Matrix is not rectangular")
+    }
+
+    for (const value of row) {
+      if (typeof value !== "number" || Number.isNaN(value)) {
+        throw new Error("Matrix contains non-numeric values")
+      }
+    }
+  }
 }
 
 function isDiagonal(matrix) {
@@ -12,5 +34,20 @@ function isDiagonal(matrix) {
   return true
 }
 
-module.exports = { flatten, isDiagonal }
+
+function flatten(matrices) {
+  const values = []
+
+  for (const matrix of matrices) {
+    validateMatrix(matrix)
+
+    for (const row of matrix) {
+      for (const value of row) {
+        values.push(value)
+      }
+    }
+  }
+
+  return values
+}
 
